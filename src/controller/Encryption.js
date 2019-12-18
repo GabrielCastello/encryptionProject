@@ -1,6 +1,6 @@
 class CryptoController {
-  constructor(srcText) {
-    this.srcText = srcText;
+  constructor() {
+    this.srcText = null;
     this.unicodedNumbersFrom_srcText = null;
     this.encryptedText = null;
 
@@ -40,7 +40,6 @@ class CryptoController {
     var text = new String();
     for (var j = 0; j < matrix[0].length; j++)
       for (var i = 0; i < matrix.length; i++) text += matrix[i][j] > 0 ? String.fromCharCode(matrix[i][j]) : "";
-    console.log("TCL: CryptoController -> getTextFromMatrix -> text", text);
     return text;
   }
 
@@ -90,45 +89,34 @@ class CryptoController {
     return result;
   }
 
-  encryptText() {
+  encryptText(text) {
+    this.srcText = text;
     /* Convert the srcText to an Matrix, converting char to charCode(unicode) */
     const matrixFrom_srcText = this.getMatrixFromText(this.srcText, 4);
-    /* Multiplies the source text matrix with the enconding matrix */
+    /* Multiplies the source text matrix by the enconding matrix */
     const multipliedMatrix = this.multiplyMatrices(this.encodingMatrix, matrixFrom_srcText);
     /* Converts the multiplied matrix to string */
     const numbersFrom_srcText = this.getNumbersFromMatrix(multipliedMatrix);
     /* Converts the  multiplied matrix to an encryptedChar sequence*/
     this.encryptedText = this.numberToChar(numbersFrom_srcText);
 
-    // this.unicodedNumbersFrom_srcText = numbersFrom_srcText;
-    // console.log("TCL: CryptoController -> encryptText -> this.unicodedNumbersFrom_srcText", this.unicodedNumbersFrom_srcText);
-    // this.encryptedText = encryptedTextFrom_srcText;
-    // console.log("TCL: CryptoController -> encryptText -> this.encryptedText", this.encryptedText);
+    return this.encryptedText;
   }
 
-  decryptText() {
-    console.log("------------------------------------");
-    // console.log(
-    //   "TCL: CryptoController -> decryptText -> this.unicodedNumbersFrom_srcText",
-    //   this.unicodedNumbersFrom_srcText
-    // );
-    // console.log("TCL: CryptoController -> decryptText -> this.encryptedText", this.encryptedText);
-    // console.log("------------------------------------");
-    // var encryptedTextNumbers = this.unicodedNumbersFrom_srcText;
-    // console.log("TCL: CryptoController -> decryptText -> encryptedTextNumbers", encryptedTextNumbers);
+  getEncryptedText() {
+    return this.encryptedText;
+  }
 
-    var matrixFromText = this.getMatrixFromNumbers(this.charToNumber(this.encryptedText), 4);
-    // var matrixFromText = this.getMatrixFromNumbers(encryptedText, 4);
-    // var matrixFromNumbers = this.getMatrixFromNumbers(encryptedTextNumbers, 4);
-
+  decryptText(encryptedText) {
+    /* Converts encrypted string to numbers */
+    const encryptedNumbers = this.charToNumber(encryptedText);
+    /* Converts numbers to matrix */
+    var matrixFromText = this.getMatrixFromNumbers(encryptedNumbers, 4);
+    /* Multiply encrypted matrix by the decondig matrix */
     var plainMatrixFromText = this.multiplyMatrices(this.decodingMatrix, matrixFromText);
-    // var plainMatrixFromNumbers = this.multiplyMatrices(this.decodingMatrix, matrixFromNumbers);
-
+    /* Convets unicode to char, revealing the encrypted text */
     let decryptedDataFromText = this.getTextFromMatrix(plainMatrixFromText);
-    // let decryptedDataFromNumbers = this.getTextFromMatrix(plainMatrixFromNumbers);
-
-    console.log("TCL: CryptoController -> decryptText -> decryptedDataFromText", decryptedDataFromText);
-    // console.log("TCL: CryptoController -> decryptText -> decryptedDataFromNumbers", decryptedDataFromNumbers);
+    return decryptedDataFromText;
   }
 }
 

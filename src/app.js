@@ -27,12 +27,16 @@ app.use(function(req, res, next) {
   next(createError(404));
 });
 
-const CryptoController = require("./controller/crypto");
+const CryptoController = require("./controller/Encryption");
 
-const Crypto = new CryptoController("Texto Simples");
+const Crypto = new CryptoController();
 
-Crypto.encryptText();
-Crypto.decryptText();
+Crypto.encryptText("Texto Simples");
+console.log("TCL: Crypto.getEncryptedText()", Crypto.getEncryptedText());
+console.log(
+  "TCL: Crypto.decryptText():",
+  Crypto.decryptText("BGFABGLFABGLLAKFAFEFAFHFABGFEAHKIABFEABGJIABHIIAMJAFFJAGHEABGHEAHIJA")
+);
 
 // error handler
 app.use(function(err, req, res, next) {
